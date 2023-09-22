@@ -1,6 +1,5 @@
 #include <vector>
 
-template <int N>
 class ParticleSoA {
 
 	public:
