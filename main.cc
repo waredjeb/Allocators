@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <random>
 
 
 class Timer {
@@ -33,20 +34,25 @@ void press_enter_to_continue(void) {
 
 int main() {
    printf("Hello! Run top -p %d to follow along!\n", getpid());
+   std::random_device rd;
+   std::mt19937 gen(rd());
+   
+   // Define the range for random numbers
+   std::uniform_int_distribution<int> distribution(500, 1000);
+   
+   // Generate a random integer between 10 and 10000
 
-    const int N = 1000;
-    const int NIter = 100000;
-    CachingAllocator allocator;
+    const int NIter = 10;
+    CachingAllocator allocator(true);
     Timer timer;
 
     for (int it = 0; it < NIter; ++it) {
-        ParticleSoA<N> particles;
-
+        const int N = distribution(gen);
+        ParticleSoA particles;
         particles.columns.x = static_cast<double*>(allocator.allocate(sizeof(double) * N));
         particles.columns.y = static_cast<double*>(allocator.allocate(sizeof(double) * N));
         particles.columns.z = static_cast<double*>(allocator.allocate(sizeof(double) * N));
-        particles.columns.id = static_cast<int*>(allocator.allocate(sizeof(int) * N));
-
+ //       particles.columns.id = static_cast<int*>(allocator.allocate(sizeof(int) * N));
         // Fill vectors x and y
         for (int i = 0; i < N; ++i) {
             particles.columns.x[i] = static_cast<double>(i);
@@ -66,18 +72,19 @@ int main() {
             }
         }
 
-        allocator.deallocate(particles.columns.x);
-        allocator.deallocate(particles.columns.y);
         allocator.deallocate(particles.columns.z);
-        allocator.deallocate(particles.columns.id);
+        allocator.deallocate(particles.columns.y);
+        allocator.deallocate(particles.columns.x);
+//        allocator.deallocate(particles.columns.id);
     }  
 
    std::cout << "Elapsed time: " << timer.elapsed() << " ms " << std::endl;
-   press_enter_to_continue();
     
    Timer timer2;
 
    for(int it = 0; it < NIter ; ++it){
+        int NPart = distribution(gen);
+        const int N = NPart;
 	    ParticleSoAVec particlesVec;
         particlesVec.columns.z.resize(N); 
         for (int i = 0; i < N; ++i) {
