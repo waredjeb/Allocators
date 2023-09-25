@@ -23,8 +23,8 @@ class CachingAllocator {
       if (!cached_blocks[binIndex].empty()) {
         const MemoryBlock cachedMemoryBlock =
             std::move(cached_blocks[binIndex].back());
-        void* allocatedMemory = cachedMemoryBlock.ptr;
         cached_blocks[binIndex].pop_back();
+        void* allocatedMemory = cachedMemoryBlock.ptr;
         live_blocks[binIndex].push_back(std::move(cachedMemoryBlock));
         if (debug_)
           printf("Reusing block %p of size %lld Bytes\n", cachedMemoryBlock.ptr,
@@ -57,9 +57,9 @@ class CachingAllocator {
           printf("Deallocating block %p of size %lld to bin %lld\n", ptr,
                  static_cast<long long>(it->size), static_cast<long long>(i));
         const MemoryBlock block = std::move(*it);
+        bin.erase(it);
         std::size_t binIndex = findBin(block.size);
         cached_blocks[binIndex].push_back(std::move(block));
-        bin.erase(it);
         return;
       }
     }
