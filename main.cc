@@ -26,14 +26,7 @@ private:
     std::chrono::high_resolution_clock::time_point start_time_;
 };
 
-void press_enter_to_continue(void) {
-   printf("Press enter");
-   getchar();
-   return;
-}
-
 int main() {
-   printf("Hello! Run top -p %d to follow along!\n", getpid());
    std::random_device rd;
    std::mt19937 gen(rd());
    
@@ -42,8 +35,8 @@ int main() {
    
    // Generate a random integer between 10 and 10000
 
-    const int NIter = 10;
-    CachingAllocator allocator(true);
+    const int NIter = 10000;
+    CachingAllocator allocator(false);
     Timer timer;
 
     for (int it = 0; it < NIter; ++it) {
@@ -52,7 +45,6 @@ int main() {
         particles.columns.x = static_cast<double*>(allocator.allocate(sizeof(double) * N));
         particles.columns.y = static_cast<double*>(allocator.allocate(sizeof(double) * N));
         particles.columns.z = static_cast<double*>(allocator.allocate(sizeof(double) * N));
- //       particles.columns.id = static_cast<int*>(allocator.allocate(sizeof(int) * N));
         // Fill vectors x and y
         for (int i = 0; i < N; ++i) {
             particles.columns.x[i] = static_cast<double>(i);
@@ -75,7 +67,6 @@ int main() {
         allocator.deallocate(particles.columns.z);
         allocator.deallocate(particles.columns.y);
         allocator.deallocate(particles.columns.x);
-//        allocator.deallocate(particles.columns.id);
     }  
 
    std::cout << "Elapsed time: " << timer.elapsed() << " ms " << std::endl;
