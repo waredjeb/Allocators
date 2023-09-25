@@ -1,8 +1,6 @@
 #include <vector>
 
-class ParticleSoA {
-
- public:
+struct ParticleSoA {
   ParticleSoA() = default;
 
   struct Columns {

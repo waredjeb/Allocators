@@ -71,6 +71,8 @@ int main() {
     allocator.deallocate(particles.columns.x);
   }
 
+  allocator.free();
+
   std::cout << "Elapsed time: " << timer.elapsed() << " ms " << std::endl;
 
   Timer timer2;

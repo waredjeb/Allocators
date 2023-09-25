@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <cmath>
-#include <deque>
 #include <iostream>
 #include <vector>
 
@@ -66,6 +65,22 @@ class CachingAllocator {
     }
     if (debug_)
       printf("Unable to deallocate block %p\n", ptr);
+  }
+  // Function to release all allocated memory
+  void free() {
+    for (auto& bin : live_blocks) {
+      for (auto& block : bin) {
+        delete[] static_cast<char*>(block.ptr);
+      }
+    }
+    for (auto& bin : cached_blocks) {
+      for (auto& block : bin) {
+        delete[] static_cast<char*>(block.ptr);
+      }
+    }
+    // Clear the vectors
+    live_blocks.clear();
+    cached_blocks.clear();
   }
 
  private:
